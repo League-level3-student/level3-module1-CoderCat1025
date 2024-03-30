@@ -1,5 +1,7 @@
 package _05_Retro_Sun;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 
 /*
@@ -11,11 +13,12 @@ import processing.core.PApplet;
 public class RetroSun extends PApplet {
 	static final int WIDTH = 800;
 	static final int HEIGHT = 600;
-	
+
 	float x = 400 - 200;
-	float y = WIDTH / 2;
+	float y = 500;
 	float w = 2 * 200;
 	float h = 40;
+	boolean done = false;
 
 	// RGB colors
 	int[] sunColors = {
@@ -75,7 +78,7 @@ public class RetroSun extends PApplet {
 		for (int i = 0; i < pixels.length; i++) {
 			if (pixels[i] == sunColors[0]) {
 				int y = i / width;
-				float step = map(y, 100, 200, 0, 1);
+				float step = map(y, 100, 500, 0, 1);
 				int sun = interpolateColor(sunColors, step);
 
 				pixels[i] = sun;
@@ -122,8 +125,8 @@ public class RetroSun extends PApplet {
 		//  float w = 2 * sunRadius
 
 		// Do you see a section missing from the sun like in the 3rd image?
-fill(bgColor);
-rect(x, y, w, h);
+		fill(bgColor);
+		rect(x, y, w, h);
 		/*
 		 * PART 4: Moving the missing sun sections
 		 *
@@ -153,16 +156,16 @@ rect(x, y, w, h);
 
 		// The map() function will make the value of h = 1 if y is at the top,
 		// and h = 40 if y is at the bottom.
-if (y > 200) {
-	y--;
-	if (y % 5 == 0) {
-		h--;
-	}
-} else {
-	y = 500;
-	h = 40;
-}
-rect(x, y, w, h);
+		if (y > 220) {
+			y--;
+			if (y%7 == 0) {
+				h--;
+			}
+		} else {
+			y = 500;
+			h = 40;
+		}
+		rect(x, y, w, h);
 		/*
 		 * PART 5: Managing the missing sun sections
 		 *
@@ -173,7 +176,23 @@ rect(x, y, w, h);
 		// code you wrote for the 1 missing sun section.
 		// HINT: You can use the Rectangle class defined below to create
 		// a list of Rectangles.
+		ArrayList<Rectangle> rects = new ArrayList<Rectangle>();
+		rects.add(new Rectangle(x, y - 70, w, h-10));
+		rects.add(new Rectangle(x, y - 140, w, h-20));
+		rects.add(new Rectangle(x, y - 210, w, h-30));
 
+		for (int i = 0; i < rects.size(); i++) {
+			if (rects.get(i).y > 220) {
+				rects.get(i).y--;
+				if (rects.get(i).y%7 == 0) {
+					rects.get(i).h--;
+				}
+			} else {
+				rects.get(i).y = 500;
+				rects.get(i).h = 40;
+			}
+			rect(rects.get(i).x, rects.get(i).y, rects.get(i).w, rects.get(i).h);
+		}
 
 		/*
 		 * PART 6: Adding extras
