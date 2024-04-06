@@ -3,6 +3,7 @@ package _06_Intro_To_Hash_Maps;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -47,6 +48,7 @@ public class _02_LogSearch implements ActionListener {
 	JButton entry;
 	JButton search;
 	JButton view;
+	JButton remove;
 	HashMap<Integer, String> IDList = new HashMap<Integer, String>();
 
 	public void setup() {
@@ -55,11 +57,13 @@ public class _02_LogSearch implements ActionListener {
 		entry = new JButton();
 		search = new JButton();
 		view = new JButton();
+		remove = new JButton();
 
 		frame.add(panel);
 		panel.add(entry);
-		panel.add(view);
+		panel.add(remove);
 		panel.add(search);
+		panel.add(view);
 
 
 		frame.setVisible(true);
@@ -68,9 +72,11 @@ public class _02_LogSearch implements ActionListener {
 		entry.setText("Add Entry");
 		search.setText("Search by ID");
 		view.setText("View List");
+		remove.setText("Remove Entry");
 		entry.addActionListener(this);
 		search.addActionListener(this);
 		view.addActionListener(this);
+		remove.addActionListener(this);
 
 		frame.setName("Name Log");
 
@@ -82,19 +88,39 @@ public class _02_LogSearch implements ActionListener {
 		if (e.getSource() == entry) {
 			String ID = JOptionPane.showInputDialog(null, "Enter an ID number.");
 			String name = JOptionPane.showInputDialog(null, "Enter a name (first and last).");
+			if (IDList.containsKey(Integer.parseInt(ID))) {
+				JOptionPane.showMessageDialog(null, "ID " + ID + " is already in use.");
+			} else {
+				IDList.put(Integer.parseInt(ID), name);
+				JOptionPane.showMessageDialog(null, "Entry sucessfully added.");
+			}
 
-			IDList.put(Integer.parseInt(ID), name);
-			
 		} else if (e.getSource() == search) {
 			String id = JOptionPane.showInputDialog(null, "Enter an ID number.");
 			if (IDList.containsKey(Integer.parseInt(id))) {
-JOptionPane.showMessageDialog(null, "ID " + id + " belongs to " + IDList.get(Integer.parseInt(id)));
+				JOptionPane.showMessageDialog(null, "ID " + id + " belongs to " + IDList.get(Integer.parseInt(id)));
 			} else {
-JOptionPane.showMessageDialog(null, "There is no one with ID " + id + ".");
+				JOptionPane.showMessageDialog(null, "There is no one with ID " + id + ".");
 			}
+
 		} else if (e.getSource() == view) {
+			String list = "";
+			Set <Integer> keys = IDList.keySet();
 
+			for (Integer i : keys) {
+				list = list + "ID: " + i + " Name: " + IDList.get(i) + "\n";
+			}
+			JOptionPane.showMessageDialog(null, list);
+
+		} else if (e.getSource() == remove) {
+			String ID = JOptionPane.showInputDialog(null, "Enter an ID number.");
+			if (IDList.containsKey(Integer.parseInt(ID))) {
+				IDList.remove(Integer.parseInt(ID));
+				JOptionPane.showMessageDialog(null, "Entry successfully removed.");
+			} else {
+				JOptionPane.showMessageDialog(null, "There is no one with ID " + ID + ".");
+			}
 		}
-	}
 
+	}
 }
