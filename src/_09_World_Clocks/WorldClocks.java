@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -42,6 +43,7 @@ public class WorldClocks implements ActionListener {
     JFrame frame;
     JPanel panel;
     JTextArea textArea;
+    JButton button;
     
     String city;
     String dateStr;
@@ -49,7 +51,7 @@ public class WorldClocks implements ActionListener {
     
     public WorldClocks() {
         clockUtil = new ClockUtilities();
-
+        
         // The format for the city must be: city, country (all caps)
         city = "Chicago, US";
         timeZone = clockUtil.getTimeZoneFromCityName(city);
@@ -60,22 +62,28 @@ public class WorldClocks implements ActionListener {
         dateStr = dayOfWeek + " " + month + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.YEAR);
         
         System.out.println(dateStr);
-
+        
         // Sample starter program
         frame = new JFrame();
         panel = new JPanel();
+        button = new JButton();
         textArea = new JTextArea();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(100, 100);
+        button.addActionListener(this);
+        button.setText("Add Clock");
         frame.add(panel);
         panel.add(textArea);
+        panel.add(button);
         textArea.setText(city + "\n" + dateStr);
         
         // This Timer object is set to call the actionPerformed() method every
         // 1000 milliseconds
         timer = new Timer(1000, this);
         timer.start();
+        
+        frame.pack();
     }
 
     @Override

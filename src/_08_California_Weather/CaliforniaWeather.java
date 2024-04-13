@@ -1,6 +1,14 @@
 package _08_California_Weather;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.Set;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /*
  * OBJECTIVE:
@@ -27,19 +35,125 @@ import java.util.HashMap;
  * temperature, you can get a free API key at: https://openweathermap.org/api
  */
 
-public class CaliforniaWeather {
-    
-    void start() {
-        HashMap<String, WeatherData> weatherData = Utilities.getWeatherData();
-        
-        // All city keys have the first letter capitalized of each word
-        String cityName = Utilities.capitalizeWords( "National City" );
-        WeatherData datum = weatherData.get(cityName);
-        
-        if( datum == null ) {
-            System.out.println("Unable to find weather data for: " + cityName);
-        } else {
-            System.out.println(cityName + " is " + datum.weatherSummary + " with a temperature of " + datum.temperatureF + " F");
-        }
-    }
+public class CaliforniaWeather implements ActionListener {
+	JPanel panel;
+	JFrame frame;
+	JButton CButton;
+	JButton WButton;
+	JButton TButton;
+
+	void setup() {
+		panel = new JPanel();
+		frame = new JFrame();
+		CButton = new JButton();
+		WButton = new JButton();
+		TButton = new JButton();
+
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.add(panel);
+		panel.add(CButton);
+		panel.add(TButton);
+		panel.add(WButton);
+
+		frame.setName("California Weather");
+		CButton.setText("Search by City Name");
+		WButton.setText("Search by Weather Condition");
+		TButton.setText("Search by Temperature");
+
+		CButton.addActionListener(this);
+		WButton.addActionListener(this);
+		TButton.addActionListener(this);
+
+		frame.pack();
+
+	}
+
+	void nameSearch() {
+		HashMap<String, WeatherData> weatherData = Utilities.getWeatherData();
+
+		// All city keys have the first letter capitalized of each word
+		String cityName = JOptionPane.showInputDialog(null, "Input a city name (capitalized).");
+		WeatherData datum = weatherData.get(cityName);
+
+		if( datum == null ) {
+			JOptionPane.showMessageDialog(null, "Unable to find weather data for: " + cityName);
+		} else {
+			JOptionPane.showMessageDialog(null, cityName + " is " + datum.weatherSummary + " with a temperature of " + datum.temperatureF + " F");
+		}
+	}
+
+	void weatherSearch() {
+		HashMap<String, WeatherData> weatherData = Utilities.getWeatherData();
+
+		String weather = JOptionPane.showInputDialog(null, "Input a weather condition.");
+
+		String cities = "Cities with " + weather + " weather: ";
+		Set <String> keys = weatherData.keySet();
+		int count = 0;
+		for (String i : keys) {
+			if (i.contains("0") || i.contains("1") || i.contains("2") || i.contains("3") || i.contains("4") || i.contains("5") || i.contains("6") || i.contains("7") || i.contains("8") || i.contains("9")) {
+
+			} else {
+				if (weatherData.get(i).weatherSummary.equals(weather)) {
+					cities = cities + i + ", ";
+					count++;
+					if (count%10 == 0) {
+						cities = cities + "\n";
+					}
+				}
+			}
+		}
+
+		if (cities.equals("Cities with " + weather + " weather: ")) {
+			JOptionPane.showMessageDialog(null, "There are no cities with that weather condition.");
+		} else {
+			JOptionPane.showMessageDialog(null, cities);
+		}
+	}
+
+	void tempSearch() {
+		HashMap<String, WeatherData> weatherData = Utilities.getWeatherData();
+
+		String a = JOptionPane.showInputDialog(null, "Input a minimuum temperature.");
+		String b = JOptionPane.showInputDialog(null, "Input a maximum temperature.");
+
+		int min = Integer.parseInt(a);
+		int max = Integer.parseInt(b);
+
+		String cities = "Cities with " + min + " to " + max + " temperature: ";
+		Set <String> keys = weatherData.keySet();
+		int count = 0;
+		for (String i : keys) {
+			if (i.contains("0") || i.contains("1") || i.contains("2") || i.contains("3") || i.contains("4") || i.contains("5") || i.contains("6") || i.contains("7") || i.contains("8") || i.contains("9")) {
+
+			} else {
+				if (weatherData.get(i).temperatureF < max && weatherData.get(i).temperatureF > min) {
+					cities = cities + i + ", ";
+					count++;
+					if (count%10 == 0) {
+						cities = cities + "\n";
+					}
+				}
+			}
+		}
+
+		if (cities.equals("Cities with " + min + " to " + max + " temperature: ")) {
+			JOptionPane.showMessageDialog(null, "There are no cities within the temperature range.");
+		} else {
+			JOptionPane.showMessageDialog(null, cities);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == CButton) {
+			nameSearch();
+		} else if (e.getSource() == WButton) {
+			weatherSearch();
+		} else if (e.getSource() == TButton) {
+			tempSearch();
+		}
+
+	}
 }
